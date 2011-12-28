@@ -1,0 +1,12 @@
+{application, nif_big,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, { nif_big_app, []}},
+  {env, []}
+ ]}.
