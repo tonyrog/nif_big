@@ -84,8 +84,8 @@ int enif_get_number(ErlNifEnv* env, ERL_NIF_TERM t, ErlNifBignum* big)
     if (enif_inspect_big(env, t, big))
 	return 1;
     else {
-	long digit;
-	if (enif_get_long(env, t, &digit)) {
+	ErlNifSInt64 digit;
+	if (enif_get_int64(env, t, &digit)) {
 	    big->size = 1;
 	    if (digit < 0) {
 		big->sign = 1;

@@ -52,7 +52,6 @@ ERL_NIF_TERM bit_size(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     unsigned long size;
     unsigned long d;
     
-//  DBG("%s: DIGIT_BITS=%lu argv[0] = %p\r\n", __FUNCTION__, DIGIT_BITS, (void*)argv[0]);
     if (!enif_get_number(env, argv[0], &big))
 	return enif_make_badarg(env);
     
@@ -81,7 +80,7 @@ ERL_NIF_TERM bit_test(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 	    d++;
 	}
 	if ((d < big.size) && (bn < DIGIT_BITS))
-	    bit = (big.digits[d] & (1 << bn)) != 0;
+	    bit = (big.digits[d] & (((ErlNifBigDigit)1) << bn)) != 0;
     }
     else
 	return enif_make_badarg(env);
