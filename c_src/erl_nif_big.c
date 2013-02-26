@@ -1,5 +1,5 @@
 
-#include "erl_nif_big.h"
+#include "../include/erl_nif_big.h"
 
 #define TAG_PRIMARY_HEADER	0x0
 

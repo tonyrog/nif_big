@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 #include "erl_nif.h"
-#include "erl_nif_big.h"
+#include "../include/erl_nif_big.h"
 
 // #define DEBUG
 
