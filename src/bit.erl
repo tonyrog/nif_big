@@ -39,7 +39,7 @@ init() ->
 test(X, I) -> test_(X,I).
 test_(X, I) 
   when is_integer(X), X >= 0, is_integer(I), I >= 0 ->
-    (X bsl I) band 1.
+    (X bsr I) band 1.
 
 %%--------------------------------------------------------------------
 %% @doc
