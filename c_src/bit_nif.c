@@ -74,12 +74,9 @@ ERL_NIF_TERM bit_test(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 	return enif_make_badarg(env);
 
     if (enif_get_number(env, argv[0], &big) && !big.sign) {
-	int d = 0;
-	while((d < big.size) && (bn >= DIGIT_BITS)) {
-	    bn -= DIGIT_BITS;
-	    d++;
-	}
-	if ((d < big.size) && (bn < DIGIT_BITS))
+	int d = bn / DIGIT_BITS;
+	bn %= DIGIT_BITS;
+	if (d < big.size)
 	    bit = (big.digits[d] & (((ErlNifBigDigit)1) << bn)) != 0;
     }
     else
@@ -100,13 +97,9 @@ ERL_NIF_TERM bit_set(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     if (enif_get_number(env, argv[0], &big) && !big.sign) {
 	if (enif_copy_number(env, &big, min_size)) {
 	    ERL_NIF_TERM r;
-	    int d = 0;
-	    while((d < big.size) && (bn >= DIGIT_BITS)) {
-		bn -= DIGIT_BITS;
-		d++;
-	    }
+	    int d = bn / DIGIT_BITS;
+	    bn %= DIGIT_BITS;
 	    big.digits[d] |= (((ErlNifBigDigit)1) << bn);
-
 	    r = enif_make_number(env, &big);
 	    enif_release_number(env, &big);
 	    return r;
@@ -130,13 +123,9 @@ ERL_NIF_TERM bit_clear(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 	return argv[0];
     else {
 	ERL_NIF_TERM r;
-	int d = 0;
-
+	int d = bn / DIGIT_BITS;
+	bn %= DIGIT_BITS;	
 	enif_copy_number(env, &big, min_size);
-	while((d < big.size) && (bn >= DIGIT_BITS)) {
-	    bn -= DIGIT_BITS;
-	    d++;
-	}
 	big.digits[d] &= ~(((ErlNifBigDigit)1) << bn);
 	r = enif_make_number(env, &big);
 	enif_release_number(env, &big);
@@ -157,12 +146,8 @@ ERL_NIF_TERM bit_toggle(ErlNifEnv* env, int argc,  const ERL_NIF_TERM argv[])
     if (enif_get_number(env, argv[0], &big)  && !big.sign) {
 	if (enif_copy_number(env, &big, min_size)) {
 	    ERL_NIF_TERM r;
-	    int d = 0;
-
-	    while((d < big.size) && (bn >= DIGIT_BITS)) {
-		bn -= DIGIT_BITS;
-		d++;
-	    }
+	    int d = bn / DIGIT_BITS;
+	    bn %= DIGIT_BITS;		    
 	    big.digits[d] ^= (((ErlNifBigDigit)1) << bn);
 	    r = enif_make_number(env, &big);
 	    enif_release_number(env, &big);
