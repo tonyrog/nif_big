@@ -93,6 +93,42 @@ static int POPCOUNT(ErlNifBigDigit x)
     x = x + (x>>4);
     return ((x & BM) % 255);
 }
+
+// LLL.....
+// 00011100   return 3
+static int CLZ(ErlNifBigDigit x)
+{
+    int count = sizeof(ErlNifBigDigit)*8;
+    while(x) {
+	x >>= 1;
+	count--;
+    }
+    return count;
+}
+// ......TT  
+// 00011100   return 2
+static int CTZ(ErlNifBigDigit x)
+{
+    int count = sizeof(ErlNifBigDigit)*8;
+    while(x) {
+	x <<= 1;
+	count--;
+    }
+    return count;
+}
+
+// .....i..  
+// 00011100   return i+1
+// 00000000   return 0
+static int FFS(ErlNifBigDigit x)
+{
+    int i = sizeof(ErlNifBigDigit)*8;
+    while(x) {
+	x <<= 1;
+	i--;
+    }
+    return i;
+}
 #endif
 
 // Calculate size of representation, for negative numbers
@@ -108,10 +144,7 @@ ERL_NIF_TERM bit_size(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     
     size = (big.size - 1)*DIGIT_BITS;
     d = big.digits[big.size-1];
-    while(d) {
-	size++;
-	d >>= 1;
-    }
+    size += (DIGIT_BITS - CLZ(d));
     return enif_make_ulong(env, size);
 }
 
@@ -215,6 +248,7 @@ ERL_NIF_TERM bit_count(ErlNifEnv* env, int argc,  const ERL_NIF_TERM argv[])
     int i;
     if (!enif_get_number(env, argv[0], &big))
 	return enif_make_badarg(env);
+    count=0;
     for (i=0; i<big.size;i++)
 	count += POPCOUNT(big.digits[i]);
     return enif_make_int(env, count);
